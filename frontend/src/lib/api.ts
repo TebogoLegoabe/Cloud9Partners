@@ -30,20 +30,25 @@ async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> 
   }
 
   let res = await fetch(`${BASE_URL}${path}`, { ...options, headers })
+  let refreshSucceeded = false
   if (res.status === 401 && supabase) {
     const { data, error } = await supabase.auth.refreshSession()
     const refreshedToken = data.session?.access_token
     if (!error && refreshedToken) {
+      refreshSucceeded = true
       headers.set('Authorization', `Bearer ${refreshedToken}`)
       res = await fetch(`${BASE_URL}${path}`, { ...options, headers })
     }
   }
   if (res.status === 401 && supabase) {
-    await supabase.auth.signOut({ scope: 'local' })
-    if (!window.location.pathname.startsWith('/signin')) {
-      window.location.replace('/signin?expired=1')
+    if (!refreshSucceeded) {
+      await supabase.auth.signOut({ scope: 'local' })
+      if (!window.location.pathname.startsWith('/signin')) {
+        window.location.replace('/signin?expired=1')
+      }
+      throw new ApiError(401, 'Your session expired. Please sign in again.')
     }
-    throw new ApiError(401, 'Your session expired. Please sign in again.')
+    throw new ApiError(401, 'We could not verify your account with the service. Please try again.')
   }
   const body = await res.json().catch(() => ({}))
   if (!res.ok) {

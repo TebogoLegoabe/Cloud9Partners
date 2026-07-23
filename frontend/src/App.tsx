@@ -4,6 +4,8 @@ import SignUpPage from './pages/SignUpPage'
 import RegistrationPage from './pages/RegistrationPage'
 import CarComparePage from './pages/CarComparePage'
 import SignInPage from './pages/SignInPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import ResetPasswordPage from './pages/ResetPasswordPage'
 import DashboardPage from './pages/DashboardPage'
 import PaymentResultPage from './pages/PaymentResultPage'
 import LegalPage from './pages/LegalPage'
@@ -22,6 +24,8 @@ export default function App() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/signup" element={<RegistrationPage />} />
       <Route path="/signin" element={<SignInPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/terms" element={<LegalPage type="terms" />} />
       <Route path="/privacy" element={<LegalPage type="privacy" />} />
       <Route path="/payment/success" element={<PaymentResultPage outcome="success" />} />
