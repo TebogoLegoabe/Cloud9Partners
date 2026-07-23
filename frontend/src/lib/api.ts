@@ -5,6 +5,7 @@ import type {
   ServiceRequest,
   ServiceType,
   Vehicle,
+  CarComparison,
 } from '../types'
 
 const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? ''
@@ -71,6 +72,12 @@ export const api = {
     apiFetch<PaymentInitiation>('/api/payments/initiate', {
       method: 'POST',
       body: JSON.stringify({ request_id: requestId }),
+    }),
+
+  compareCars: (data: { car_a: string; car_b: string; priorities?: string }) =>
+    apiFetch<CarComparison>('/api/ai/compare', {
+      method: 'POST',
+      body: JSON.stringify(data),
     }),
 }
 

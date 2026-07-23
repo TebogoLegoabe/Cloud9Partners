@@ -71,3 +71,27 @@ export interface PaymentInitiation {
   process_url: string
   fields: Record<string, string>
 }
+
+export interface CarComparisonVehicle {
+  name: string
+  power: string
+  torque: string
+  drivetrain: string
+  key_features: string[]
+  strengths: string[]
+  tradeoffs: string[]
+}
+
+export interface CarComparison {
+  title: string
+  summary: string
+  car_a: CarComparisonVehicle
+  car_b: CarComparisonVehicle
+  plain_english: Array<{ term: string; explanation: string }>
+  verdict: string
+  best_for_a: string
+  best_for_b: string
+  important_note: string
+  sources: Array<{ label: string; url: string }>
+  model: string
+}

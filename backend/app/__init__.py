@@ -21,12 +21,14 @@ def create_app(config_class: type[Config] = Config) -> Flask:
     from .api.sales_reps import sales_reps_bp
     from .api.admin import admin_bp
     from .api.payments import payments_bp
+    from .api.ai_compare import ai_compare_bp
 
     app.register_blueprint(profiles_bp, url_prefix="/api")
     app.register_blueprint(requests_bp, url_prefix="/api")
     app.register_blueprint(sales_reps_bp, url_prefix="/api")
     app.register_blueprint(admin_bp, url_prefix="/api/admin")
     app.register_blueprint(payments_bp, url_prefix="/api/payments")
+    app.register_blueprint(ai_compare_bp, url_prefix="/api/ai")
 
     @app.get("/api/health")
     def health():

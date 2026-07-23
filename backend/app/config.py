@@ -16,6 +16,7 @@ class Config:
     SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True}
 
     SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
+    SUPABASE_PUBLISHABLE_KEY = os.environ.get("SUPABASE_PUBLISHABLE_KEY", "")
     SUPABASE_JWT_SECRET = os.environ.get("SUPABASE_JWT_SECRET", "")
 
     CORS_ORIGINS = [
@@ -25,6 +26,9 @@ class Config:
     ]
 
     FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173")
+
+    OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
+    OPENAI_COMPARE_MODEL = os.environ.get("OPENAI_COMPARE_MODEL", "gpt-5.6-terra")
 
     PAYFAST_MERCHANT_ID = os.environ.get("PAYFAST_MERCHANT_ID", "")
     PAYFAST_MERCHANT_KEY = os.environ.get("PAYFAST_MERCHANT_KEY", "")

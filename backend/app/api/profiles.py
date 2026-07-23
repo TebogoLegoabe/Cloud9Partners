@@ -42,7 +42,26 @@ def create_profile():
 def get_me():
     profile = Profile.query.get(g.user_id)
     if profile is None:
-        return jsonify({"error": "Profile not found"}), 404
+        # Account registration stores these fields in Supabase user metadata.
+        # Creating the profile on first authenticated access also supports
+        # projects that require email confirmation before a session is issued.
+        metadata = g.claims.get("user_metadata") or {}
+        first_name = str(metadata.get("first_name", "")).strip()
+        last_name = str(metadata.get("last_name", "")).strip()
+        phone = str(metadata.get("phone", "")).strip()
+        email = str(g.claims.get("email", "")).strip()
+        if not all((first_name, last_name, phone, email)):
+            return jsonify({"error": "Profile setup is incomplete"}), 409
+        profile = Profile(
+            id=g.user_id,
+            role="buyer",
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            phone=phone,
+        )
+        db.session.add(profile)
+        db.session.commit()
     data = profile.to_dict()
     if profile.sales_rep_profile:
         data["sales_rep_profile"] = profile.sales_rep_profile.to_dict()

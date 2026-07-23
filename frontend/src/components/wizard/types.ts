@@ -7,6 +7,7 @@ export interface AccountData {
   phone: string
   password: string
   confirmPassword: string
+  acceptedTerms: boolean
 }
 
 export interface DetailsData {
@@ -41,6 +42,7 @@ export const initialWizardData: WizardData = {
     phone: '',
     password: '',
     confirmPassword: '',
+    acceptedTerms: false,
   },
   serviceType: null,
   details: {
