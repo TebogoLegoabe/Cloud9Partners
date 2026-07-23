@@ -29,7 +29,15 @@ async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> 
     if (token) headers.set('Authorization', `Bearer ${token}`)
   }
 
-  const res = await fetch(`${BASE_URL}${path}`, { ...options, headers })
+  let res = await fetch(`${BASE_URL}${path}`, { ...options, headers })
+  if (res.status === 401 && supabase) {
+    const { data, error } = await supabase.auth.refreshSession()
+    const refreshedToken = data.session?.access_token
+    if (!error && refreshedToken) {
+      headers.set('Authorization', `Bearer ${refreshedToken}`)
+      res = await fetch(`${BASE_URL}${path}`, { ...options, headers })
+    }
+  }
   const body = await res.json().catch(() => ({}))
   if (!res.ok) {
     throw new ApiError(res.status, (body as { error?: string }).error ?? 'Request failed')
