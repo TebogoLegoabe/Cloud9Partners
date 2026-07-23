@@ -16,6 +16,8 @@ export default function RegistrationPage() {
   const [resendState, setResendState] = useState<'idle' | 'sending' | 'sent'>('idle')
   if (!loading && session) return <Navigate to="/dashboard" replace />
 
+  const accountExistsMessage = 'An account with this email already exists. Sign in instead.'
+
   const register = async () => {
     setError(null)
     if (!isSupabaseConfigured || !supabase) { setError('Authentication has not been configured for this environment yet.'); return }
@@ -29,7 +31,20 @@ export default function RegistrationPage() {
           emailRedirectTo: `${window.location.origin}/signin?verified=1`,
         },
       })
-      if (signUpError) throw new Error(signUpError.message)
+      if (signUpError) {
+        const message = signUpError.message.toLowerCase()
+        if (message.includes('already registered') || message.includes('already exists')) {
+          throw new Error(accountExistsMessage)
+        }
+        throw new Error(signUpError.message)
+      }
+
+      // With email confirmation enabled, Supabase deliberately returns an
+      // obfuscated user with no identities when the address is already in use.
+      if (data.user && data.user.identities?.length === 0) {
+        throw new Error(accountExistsMessage)
+      }
+
       if (!data.session) { setCreatedEmail(account.email); setSubmitting(false); return }
       navigate('/request')
     } catch (err) { setError(err instanceof Error ? err.message : 'We could not create your account. Please try again.'); setSubmitting(false) }
