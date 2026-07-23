@@ -38,6 +38,13 @@ async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> 
       res = await fetch(`${BASE_URL}${path}`, { ...options, headers })
     }
   }
+  if (res.status === 401 && supabase) {
+    await supabase.auth.signOut({ scope: 'local' })
+    if (!window.location.pathname.startsWith('/signin')) {
+      window.location.replace('/signin?expired=1')
+    }
+    throw new ApiError(401, 'Your session expired. Please sign in again.')
+  }
   const body = await res.json().catch(() => ({}))
   if (!res.ok) {
     throw new ApiError(res.status, (body as { error?: string }).error ?? 'Request failed')
